@@ -4,7 +4,8 @@ import java.util.*;
 public class Day1 {
     public static void main(String[] args) {
         // Declarations //////
-        File expenseReport = new File(System.getProperty("user.dir") + "\\input.txt");
+        File expenseReport = new File(System.getProperty("user.dir") 
+        + "\\src\\main\\java\\AdventOfCode2020\\input.txt");
         List<Integer> complements = null, readNumbers = new ArrayList<Integer>();
         //////////////////////
         
