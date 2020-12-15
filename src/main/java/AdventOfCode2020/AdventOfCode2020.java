@@ -6,9 +6,13 @@ public class AdventOfCode2020 {
             case "1":
                 Day1.main(null);
                 break;
+            case "2":
+                Day2.main(null);
+                break;
             case "all":
                 System.out.println("----- RUNNING ALL PROBLEMS -----");
                 Day1.main(null);
+                Day2.main(null);
         }
     }
 }
