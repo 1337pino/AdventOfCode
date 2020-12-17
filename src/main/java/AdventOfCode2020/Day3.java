@@ -90,9 +90,10 @@ public class Day3 {
         // Declarations //////
         File mapFile = new File(System.getProperty("user.dir") 
             + "\\src\\main\\java\\AdventOfCode2020\\input\\Day3.txt");
+        ArrayList<String> map = new ArrayList<String>();
         //////////////////////
  
-        char[][] map = transcribeMap(mapFile);
+        copyMapInformation(mapFile, map);
 
         System.out.println("Part 1 (trees encounters with slope of right 3 down 1): " 
             + countTrees(map, 3, 1));
@@ -126,42 +127,24 @@ public class Day3 {
         }
     }
 
-    private static long countTrees(char[][] map, int horizontalSlope, int verticalSlope) {
+    /**
+     * Counts the number of trees encountered on a given slope
+     * @param map a 2D map of 
+     * @param horizontalSlope the horizontal (left or right) value of the slope
+     * @param verticalSlope the vertical (down) value of the slope
+     * @return total number of trees
+     */
+    private static long countTrees(ArrayList<String> map, int horizontalSlope, int verticalSlope) {
         int treeCount = 0;
 
-        for (int i = 0, j = 0; i < map.length;) {
-            if (map[i][j] == '#') treeCount++;
+        for (int i = 0, j = 0; i < map.size();) {
+            if (map.get(i).charAt(j) == '#') treeCount++;
             
             i += verticalSlope;
-
-            if (j + horizontalSlope <= map[0].length - 1) {
-                j += horizontalSlope;
-            } else {
-                j = (j + horizontalSlope) % (map[0].length - 1) - 1;
-            }
+            j += horizontalSlope;
+            j %= map.get(0).length();
         }
 
         return treeCount;
-    }
-
-    /**
-     * Scans the provided input map text file and converts it to a multi-dimensional character array
-     * @param inputFile text input file representing the map
-     * @return a multi-dimensional character array representing your copy of the map
-     */
-    private static char[][] transcribeMap(File inputFile) {
-        ArrayList<String> tempMap = new ArrayList<String>();
-
-        copyMapInformation(inputFile, tempMap);
-
-        char map[][] = new char[tempMap.size()][tempMap.get(0).length()];
-
-        for (int i = 0; i < tempMap.size(); i++) {
-            for (int j = 0; j < tempMap.get(0).length(); j++) {
-                map[i][j] = tempMap.get(i).charAt(j);
-            }
-        }
-
-        return map;
     }
 }
