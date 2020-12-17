@@ -62,6 +62,24 @@ In this example, traversing the map using this slope would cause you to encounte
 
 Starting at the top-left corner of your map and following a slope of right 3 and down 1, how many 
 trees would you encounter?
+
+--- Part Two ---
+Time to check the rest of the slopes - you need to minimize the probability of a sudden arboreal 
+stop, after all.
+
+Determine the number of trees you would encounter if, for each of the following slopes, you start 
+at the top-left corner and traverse the map all the way to the bottom:
+
+Right 1, down 1.
+Right 3, down 1. (This is the slope you already checked.)
+Right 5, down 1.
+Right 7, down 1.
+Right 1, down 2.
+In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respectively; multiplied 
+together, these produce the answer 336.
+
+What do you get if you multiply together the number of trees encountered on each of the listed 
+slopes?
 */
 
 import java.io.*;
@@ -69,51 +87,22 @@ import java.util.*;
 
 public class Day3 {
     public static void main(String[] args) {
-         // Declarations //////
-         File mapFile = new File(System.getProperty("user.dir") 
-         + "\\src\\main\\java\\AdventOfCode2020\\input\\Day3.txt");
+        // Declarations //////
+        File mapFile = new File(System.getProperty("user.dir") 
+            + "\\src\\main\\java\\AdventOfCode2020\\input\\Day3.txt");
+        //////////////////////
  
-         int trees = 0;
-         int horizontalSlope = 3, verticalSlope = 1;
-         //////////////////////
- 
-         char[][] map = transcribeMap(mapFile);
+        char[][] map = transcribeMap(mapFile);
 
-         for (int i = 0, j = 0; i < map.length;) {
-            if (map[i][j] == '#') trees++;
+        System.out.println("Part 1 (trees encounters with slope of right 3 down 1): " 
+            + countTrees(map, 3, 1));
 
-            // j = (j + horizontalSlope == map[0].length - 1) 
-            //     ? (j + horizontalSlope) 
-            //     : ((((j + 1) + horizontalSlope) % (map[0].length)) - 1);
-
-            j = (j + horizontalSlope <= map[0].length - 1) 
-                ? (j + horizontalSlope) 
-                : ((j + horizontalSlope) % (map[0].length - 1) - 1);
-            i += verticalSlope;
-         }
-
-         System.out.println("Part 1 (trees encounters with slope of right 3 down 1): " + trees);
-    }
-
-    /**
-     * Scans the provided input map text file and converts it to a multi-dimensional character array
-     * @param inputFile text input file representing the map
-     * @return a multi-dimensional character array representing your copy of the map
-     */
-    public static char[][] transcribeMap(File inputFile) {
-        ArrayList<String> tempMap = new ArrayList<String>();
-
-        copyMapInformation(inputFile, tempMap);
-
-        char map[][] = new char[tempMap.size()][tempMap.get(0).length()];
-
-        for (int i = 0; i < tempMap.size(); i++) {
-            for (int j = 0; j < tempMap.get(0).length(); j++) {
-                map[i][j] = tempMap.get(i).charAt(j);
-            }
-        }
-
-        return map;
+        System.out.println("Part 2 (product of all the tree encounters): " 
+            + (countTrees(map, 1, 1) 
+                * countTrees(map, 3, 1) 
+                * countTrees(map, 5, 1) 
+                * countTrees(map, 7, 1) 
+                * countTrees(map, 1, 2)));
     }
 
     /**
@@ -135,5 +124,44 @@ public class Day3 {
         } finally {
             lineTokenizer.close();
         }
+    }
+
+    private static long countTrees(char[][] map, int horizontalSlope, int verticalSlope) {
+        int treeCount = 0;
+
+        for (int i = 0, j = 0; i < map.length;) {
+            if (map[i][j] == '#') treeCount++;
+            
+            i += verticalSlope;
+
+            if (j + horizontalSlope <= map[0].length - 1) {
+                j += horizontalSlope;
+            } else {
+                j = (j + horizontalSlope) % (map[0].length - 1) - 1;
+            }
+        }
+
+        return treeCount;
+    }
+
+    /**
+     * Scans the provided input map text file and converts it to a multi-dimensional character array
+     * @param inputFile text input file representing the map
+     * @return a multi-dimensional character array representing your copy of the map
+     */
+    private static char[][] transcribeMap(File inputFile) {
+        ArrayList<String> tempMap = new ArrayList<String>();
+
+        copyMapInformation(inputFile, tempMap);
+
+        char map[][] = new char[tempMap.size()][tempMap.get(0).length()];
+
+        for (int i = 0; i < tempMap.size(); i++) {
+            for (int j = 0; j < tempMap.get(0).length(); j++) {
+                map[i][j] = tempMap.get(i).charAt(j);
+            }
+        }
+
+        return map;
     }
 }
