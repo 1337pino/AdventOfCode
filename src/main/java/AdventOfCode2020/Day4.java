@@ -153,9 +153,11 @@ public class Day4 {
             if (hasValidData(passportDataBatch)) numberOfValidPassportsPart2++;
         }
 
+        System.out.println("---------- DAY 4 2020 ----------");
+
         System.out.println("Part 1 (number of valid passports): " + numberOfValidPassportsPart1);
         
-        System.out.println("Part 1 (number of valid passports): " + numberOfValidPassportsPart2);
+        System.out.println("Part 2 (number of valid passports): " + numberOfValidPassportsPart2);
     }
 
     /**

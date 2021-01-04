@@ -98,6 +98,8 @@ public class Day3 {
  
         copyMapInformation(mapFile, map);
 
+        System.out.println("---------- DAY 3 2020 ----------");
+
         System.out.println("Part 1 (trees encounters with slope of right 3 down 1): " 
             + countTrees(map, 3, 1));
 

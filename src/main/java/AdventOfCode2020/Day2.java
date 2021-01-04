@@ -90,6 +90,8 @@ public class Day2 {
             }
         }
 
+        System.out.println("---------- DAY 2 2020 ----------");
+
         System.out.println("Part 1 (number of valid passwords): " + numberOfValidPasswordsPart1);
         System.out.println("Part 2 (number of valid passwords): " + numberOfValidPasswordsPart2);
     }
