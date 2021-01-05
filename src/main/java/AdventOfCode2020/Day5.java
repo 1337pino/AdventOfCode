@@ -53,11 +53,22 @@ Here are some other boarding passes:
 
 As a sanity check, look through your list of boarding passes. What is the highest seat ID on a 
 boarding pass?
+
+--- Part Two ---
+Ding! The "fasten seat belt" signs have turned on. Time to find your seat.
+
+It's a completely full flight, so your seat should be the only missing boarding pass in your list. 
+However, there's a catch: some of the seats at the very front and back of the plane don't exist on 
+this aircraft, so they'll be missing from your list as well.
+
+Your seat wasn't at the very front or back, though; the seats with IDs +1 and -1 from yours will be 
+in your list.
+
+What is the ID of your seat?
 */
 
 import java.io.*;
 import java.util.*;
-
 
 public class Day5 {
     public static void main(String[] args) {
@@ -67,7 +78,8 @@ public class Day5 {
 
         ArrayList<String> boardingPassList = new ArrayList<String>();
 
-        int highestSeatIDFound = 0;
+        boolean[] seatMap = new boolean[1024];
+        int highestSeatIDFound = -1, yourSeatID = -1;
         //////////////////////
 
         // Load puzzle input data
@@ -77,13 +89,31 @@ public class Day5 {
         for (String boardingPass : boardingPassList) {
             int seatID = translateBoardingPass(boardingPass);
 
+            // Update seating map
+            seatMap[seatID] = true;
+
             // Update largest seat ID found if needed
             if (seatID > highestSeatIDFound) highestSeatIDFound = seatID;
+        }
+
+        // Search for your seat
+        for (int i = 1; i < 1023; i++) {
+            if (seatMap[i] == false) {
+                if (seatMap[i - 1] == true && seatMap[i + 1] == true) {
+                    yourSeatID = i;
+                    break;
+                }
+
+                i++; /* Increment i for the for loop to go up by 2 since we know the next seat 
+                        can't be ours since this one is unoccupied */
+            }
         }
 
         System.out.println("---------- DAY 5 2020 ----------");
 
         System.out.println("Part 1 (highest seat ID found): " + highestSeatIDFound);
+
+        System.out.println("Part 2 (your seat ID): " + yourSeatID);
     }
 
     /**
