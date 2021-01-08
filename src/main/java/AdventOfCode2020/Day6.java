@@ -109,15 +109,9 @@ public class Day6 {
         readTestInput(puzzleInputFile, customsAnswers);
 
         for (CustomsGroupResponse groupAnswers : customsAnswers) {
-            //ArrayList<Character> questions = new ArrayList<Character>();
             HashMap<Character, Integer> questions = new HashMap<Character, Integer>();
 
             for (int i = 0; i < groupAnswers.answers.length(); i++) {
-                // if (!questions.containsKey(groupAnswers.answers.charAt(i))) {
-                //     questions.put(groupAnswers.answers.charAt(i), 1);
-                // } else {
-                //     questions.
-                // }
                 questions.merge(groupAnswers.answers.charAt(i), 1, Integer::sum);
             }
 
