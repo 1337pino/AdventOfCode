@@ -51,10 +51,49 @@ In this example, the sum of these counts is 3 + 3 + 3 + 1 + 1 = 11.
 
 For each group, count the number of questions to which anyone answered "yes". What is the sum of 
 those counts?
+
+--- Part Two ---
+As you finish the last group's customs declaration, you notice that you misread one word in the 
+instructions:
+
+You don't need to identify the questions to which anyone answered "yes"; you need to identify the 
+questions to which everyone answered "yes"!
+
+Using the same example as above:
+
+    abc
+
+    a
+    b
+    c
+
+    ab
+    ac
+
+    a
+    a
+    a
+    a
+
+    b
+
+This list represents answers from five groups:
+
+- In the first group, everyone (all 1 person) answered "yes" to 3 questions: a, b, and c.
+- In the second group, there is no question to which everyone answered "yes".
+- In the third group, everyone answered yes to only 1 question, a. Since some people did not answer 
+"yes" to b or c, they don't count.
+- In the fourth group, everyone answered yes to only 1 question, a.
+- In the fifth group, everyone (all 1 person) answered "yes" to 1 question, b.
+- In this example, the sum of these counts is 3 + 0 + 1 + 1 + 1 = 6.
+
+For each group, count the number of questions to which everyone answered "yes". What is the sum of 
+those counts?
 */
 
 import java.io.*;
 import java.util.*;
+import AdventOfCodeHelper.CustomsGroupResponse;
 
 public class Day6 {
     public static void main(String[] args) {
@@ -62,29 +101,42 @@ public class Day6 {
         File puzzleInputFile = new File(System.getProperty("user.dir") 
             + "\\src\\main\\java\\AdventOfCode2020\\input\\Day6.txt");
 
-        ArrayList<String> questionnaireAnswers = new ArrayList<String>();
+        ArrayList<CustomsGroupResponse> customsAnswers = new ArrayList<CustomsGroupResponse>();
 
-        int totalYesQuestions = 0;
+        int totalYesQuestions = 0, totalGroupAgreements = 0;
         //////////////////////
 
-        readTestInput(puzzleInputFile, questionnaireAnswers);
+        readTestInput(puzzleInputFile, customsAnswers);
 
-        for (String groupAnswers : questionnaireAnswers) {
-            ArrayList<Character> questions = new ArrayList<Character>();
+        for (CustomsGroupResponse groupAnswers : customsAnswers) {
+            //ArrayList<Character> questions = new ArrayList<Character>();
+            HashMap<Character, Integer> questions = new HashMap<Character, Integer>();
 
-            for (int i = 0; i < groupAnswers.length(); i++) {
-                if (!questions.contains(groupAnswers.charAt(i))) {
-                    questions.add(groupAnswers.charAt(i));
-                }
+            for (int i = 0; i < groupAnswers.answers.length(); i++) {
+                // if (!questions.containsKey(groupAnswers.answers.charAt(i))) {
+                //     questions.put(groupAnswers.answers.charAt(i), 1);
+                // } else {
+                //     questions.
+                // }
+                questions.merge(groupAnswers.answers.charAt(i), 1, Integer::sum);
             }
 
             totalYesQuestions += questions.size();
+
+            for (int questionCounts : questions.values()) {
+                if (questionCounts == groupAnswers.groupSize) {
+                    totalGroupAgreements++;
+                }
+            }
         }
 
         System.out.println("---------- DAY 6 2020 ----------");
 
         System.out.println("Part 1 (total unique yes questions for each group): " 
                 + totalYesQuestions);
+
+        System.out.println("Part 2 (total questions entire group said yes to): " 
+                + totalGroupAgreements);
     }
 
     /**
@@ -92,24 +144,31 @@ public class Day6 {
      * @param inputFile text file for the list of boarding passes
      * @param log List of all of the question results
      */
-    public static void readTestInput(File inputFile, ArrayList<String> log) {
+    public static void readTestInput(File inputFile, ArrayList<CustomsGroupResponse> log) {
         Scanner lineTokenizer = null;
         try {
             lineTokenizer = new Scanner(inputFile);
 
             String groupAnswers = "";
+            int rows = 0;
+            CustomsGroupResponse groupResponse;
 
             while (lineTokenizer.hasNextLine()) {
                 String passengerAnswers = lineTokenizer.nextLine();
 
                 if (passengerAnswers.equals("")) {
-                    log.add(groupAnswers);
+                    groupResponse = new CustomsGroupResponse(groupAnswers, rows);
+                    log.add(groupResponse);
+
                     groupAnswers = "";
+                    rows = 0;
                 } else {
                     groupAnswers += passengerAnswers;
+                    rows++;
                 }
             }
-            log.add(groupAnswers);
+            groupResponse = new CustomsGroupResponse(groupAnswers, rows);
+            log.add(groupResponse);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
