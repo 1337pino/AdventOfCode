@@ -21,6 +21,9 @@ public class AdventOfCode2020 {
             case "6":
                 Day6.main(null);
                 break;
+            case "7":
+                Day7.main(null);
+                break;
             case "all":
                 System.out.println("----- RUNNING ALL PROBLEMS -----");
                 Day1.main(null);
@@ -29,6 +32,7 @@ public class AdventOfCode2020 {
                 Day4.main(null);
                 Day5.main(null);
                 Day6.main(null);
+                Day7.main(null);
         }
     }
 }
