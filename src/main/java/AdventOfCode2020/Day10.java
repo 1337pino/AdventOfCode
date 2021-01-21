@@ -107,6 +107,64 @@ Find a chain that uses all of your adapters to connect the charging outlet to yo
 built-in adapter and count the joltage differences between the charging outlet, the adapters, and 
 your device. What is the number of 1-jolt differences multiplied by the number of 3-jolt 
 differences?
+
+--- Part Two ---
+To completely determine whether you have enough adapters, you'll need to figure out how many 
+different ways they can be arranged. Every arrangement needs to connect the charging outlet to your 
+device. The previous rules about when adapters can successfully connect still apply.
+
+The first example above (the one that starts with 16, 10, 15) supports the following arrangements:
+
+    (0), 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, (22)
+    (0), 1, 4, 5, 6, 7, 10, 12, 15, 16, 19, (22)
+    (0), 1, 4, 5, 7, 10, 11, 12, 15, 16, 19, (22)
+    (0), 1, 4, 5, 7, 10, 12, 15, 16, 19, (22)
+    (0), 1, 4, 6, 7, 10, 11, 12, 15, 16, 19, (22)
+    (0), 1, 4, 6, 7, 10, 12, 15, 16, 19, (22)
+    (0), 1, 4, 7, 10, 11, 12, 15, 16, 19, (22)
+    (0), 1, 4, 7, 10, 12, 15, 16, 19, (22)
+
+(The charging outlet and your device's built-in adapter are shown in parentheses.) Given the 
+adapters from the first example, the total number of arrangements that connect the charging outlet 
+to your device is 8.
+
+The second example above (the one that starts with 28, 33, 18) has many arrangements. Here are a 
+few:
+
+    (0), 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35, 38, 
+    39, 42, 45, 46, 47, 48, 49, (52)
+
+    (0), 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35, 38, 
+    39, 42, 45, 46, 47, 49, (52)
+
+    (0), 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35, 38, 
+    39, 42, 45, 46, 48, 49, (52)
+
+    (0), 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35, 38, 
+    39, 42, 45, 46, 49, (52)
+
+    (0), 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35, 38, 
+    39, 42, 45, 47, 48, 49, (52)
+
+    (0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45, 46, 48, 49, (52)
+
+    (0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45, 46, 49, (52)
+
+    (0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45, 47, 48, 49, (52)
+
+    (0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45, 47, 49, (52)
+
+    (0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45, 48, 49, (52)
+
+In total, this set of adapters can connect the charging outlet to your device in 19208 distinct 
+arrangements.
+
+You glance back down at your bag and try to remember why you brought so many adapters; there must 
+be more than a trillion valid ways to arrange them! Surely, there must be an efficient way to count 
+the arrangements.
+
+What is the total number of distinct ways you can arrange the adapters to connect the charging 
+outlet to your device?
 */
 
 import java.io.*;
@@ -116,7 +174,7 @@ public class Day10 {
     public static void main(String[] args) {
         // Declarations //////
         File puzzleInputFile = new File(System.getProperty("user.dir") 
-        + "\\src\\main\\java\\AdventOfCode2020\\input\\Day10.txt");
+        + "\\src\\main\\java\\AdventOfCode2020\\input\\test.txt");
 
         List<Integer> adapterList = new ArrayList<Integer>();
         //////////////////////
@@ -127,9 +185,83 @@ public class Day10 {
         System.out.println("---------- DAY 10 2020 ----------");
 
         System.out.println(
-            "Part 1 (What is the number of 1-jolt differences multiplied by the number of 3-jolt\n"
-            + " differences?): "
+            "Part 1 (What is the number of 1-jolt differences multiplied by the number of 3-jolt "
+            + "differences?): "
             + (countNJoltDifferences(adapterList, 1) * countNJoltDifferences(adapterList, 3)));
+
+        System.out.println(
+            "Part 2 (What is the total number of distinct ways you can arrange the adapters to "
+            + "connect the charging outlet to your device?): "
+            + countAdapterPermutations(adapterList));
+    }
+
+    /**
+     * Counts the number adapter permutations.
+     * 
+     * @param adapterList order list of adapters
+     * @return the number of differences
+     */
+    private static long countAdapterPermutations(List<Integer> adapterList) {
+        // Build difference array
+        int[] differences = new int[adapterList.size() + 1];
+        differences[0] = adapterList.get(0);
+        differences[differences.length - 1] = 3;
+        for (int i = 1; i < differences.length - 1; i++) {
+            differences[i] = adapterList.get(i) - adapterList.get(i - 1);
+        }
+
+        // Identify changeable blocks
+        ArrayList<int[]> changeableBlocks = new ArrayList<int[]>();
+        for (int j = 0; j < differences.length; j++) {
+            if (differences[j] < 3) {
+                int frontIndex = j, lastIndex = j, tempIndex = j + 1;
+                boolean stillChangeable = true;
+
+                while (stillChangeable) {
+                    if (differences[tempIndex] + differences[lastIndex] <= 3) {
+                        tempIndex++;
+                    } else {
+                        lastIndex = tempIndex - 1;
+                        stillChangeable = false;
+                    }
+                }
+
+                if (lastIndex != frontIndex) {
+                    changeableBlocks.add(
+                        Arrays.copyOfRange(differences, frontIndex, lastIndex + 1));
+                    j = lastIndex + 1;
+                } else {
+                    j++;
+                }
+            }
+        }
+
+        // Calculate permutation total
+        long permutations = 1;
+        HashMap<String, Integer> permutationDB = new HashMap<String, Integer>();
+        for (int[] block : changeableBlocks) {
+            permutations *= calculatePermutationsInArray(block, permutationDB);
+        }
+        
+        return permutations;
+    }
+
+    private static long calculatePermutationsInArray(int[] arr, 
+            HashMap<String, Integer> knownPermutationTotals) {
+        long permutations = 0;
+
+        // BELOW CODE IS BROKEN
+        /* String arrString = Arrays.toString(arr);
+        if (knownPermutationTotals.containsKey(arrString)) {
+            return knownPermutationTotals.get(arrString);
+        }
+
+        for (int i = 0; i < arr.length - 1; i++) {
+
+        }
+
+        knownPermutationTotals.put(arrString, (int)permutations); */
+        return permutations;
     }
 
     /**
